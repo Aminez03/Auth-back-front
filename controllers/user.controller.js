@@ -5,13 +5,13 @@ const config=require("config");
 const secret=config.get("secret");
 
 exports.signUp=async(req,res)=>{
-    const {fullName,email,password,adresse}=req.body;
+    const {fullName,email,password,adresse,telephone,userRole}=req.body;
     try{
         //verfier existing user avec email
         const exsitingUser= await User.findOne({email});
         if(exsitingUser){res.status(401).json({msg:"User is allready exist "})}
         //ADD NEW USER
-        const newUser= new User({fullName,email,password,adresse})
+        const newUser= new User({fullName,email,password,adresse,telephone,userRole})
         // cryptage password
         var salt = await bc.genSalt(10);
         var hash = await bc.hashSync(password, salt);
@@ -23,6 +23,7 @@ exports.signUp=async(req,res)=>{
             name:newUser.fullName,
             email:newUser.email,
             adresse:newUser.adresse,
+            telephone:newUser.telephone
         };
         const token = jwt.sign(payload,secret);
         res.status(200).send({
@@ -32,7 +33,10 @@ exports.signUp=async(req,res)=>{
             fullName: newUser.fullName,
             email: newUser.email,
             password: newUser.password,
-            adresse: newUser.adresse},
+            adresse: newUser.adresse,
+            telephone:newUser.telephone,
+            userRole:newUser.userRole,
+        },
           });
         // res.send(newUser)
     }catch(error){
@@ -54,6 +58,7 @@ exports.LogIn=async(req,res)=>{
             name:user.fullName,
             email:user.email,
             adresse:user.adresse,
+            telephone:user.telephone
         };
         const token = jwt.sign(payload,secret);
         res.status(200).send({
@@ -63,7 +68,10 @@ exports.LogIn=async(req,res)=>{
             fullName: user.fullName,
             email: user.email,
             password: user.password,
-            adresse: user.adresse},
+            adresse: user.adresse,
+            telephone:user.telephone,
+            userRole:user.userRole
+        },
           });
      
     } catch (error) {

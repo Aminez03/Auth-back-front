@@ -6,5 +6,11 @@ const userSchema=new Schema({
     email:String,
     password:String,
     adresse:String,
+    telephone:String,
+    userRole:{
+        type:String,
+        roles:["user","admin"],
+        default:"user"
+    }
 });
 module.exports=mongoose.model("User",userSchema)
